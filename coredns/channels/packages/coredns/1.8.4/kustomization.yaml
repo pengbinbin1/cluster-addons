@@ -10,7 +10,7 @@ resources:
   - clusterrolebinding.yaml
 
 configMapGenerator:
-  - name: coredns
+  - name: {{ .DNSDEPLOYNAME }}
     namespace: kube-system
     literals:
       - |

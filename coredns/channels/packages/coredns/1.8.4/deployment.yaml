@@ -1,13 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: coredns
+  name:  {{ .DNSDEPLOYNAME }}
   namespace: kube-system
   labels:
     k8s-app: kube-dns
     kubernetes.io/name: "CoreDNS"
     kubernetes.io/cluster-service: "true"
     addonmanager.kubernetes.io/mode: EnsureExists
+    deploy: {{ .DNSDEPLOYNAME }}
 spec:
   # replicas: not specified here:
   # 1. Default is 1.
@@ -22,7 +23,7 @@ spec:
   template:
     metadata:
       labels:
-        k8s-app: kube-dns
+        deploy: {{ .DNSDEPLOYNAME }}
     spec:
       priorityClassName: system-cluster-critical
       serviceAccountName: coredns
@@ -93,7 +94,7 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: coredns
+            name: {{ .DNSDEPLOYNAME }}
             items:
               - key: Corefile
                 path: Corefile

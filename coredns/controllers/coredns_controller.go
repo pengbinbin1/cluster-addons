@@ -67,8 +67,18 @@ func (r *CoreDNSReconciler) setupReconciler(mgr ctrl.Manager) error {
 			}
 			o.Spec.DNSIP = ip
 		}
+		namespacename := o.Namespace + "-" + o.Name
+		var svcTpe string
+		if o.Spec.DNSIP == "host" {
+			svcTpe = "NodePort"
+		} else {
+			svcTpe = "LoadBalancer"
+		}
+		s = strings.Replace(s, "{{ .DNSSVCType }}", svcTpe, -1)
+		s = strings.Replace(s, "{{ .DNSDEPLOYNAME }}", namespacename, -1)
+		s = strings.Replace(s, "{{ .DNSSVCNAME }}", namespacename, -1)
 		s = strings.Replace(s, "{{ .DNSDomain }}", o.Spec.DNSDomain, -1)
-		s = strings.Replace(s, "{{ .DNSIP }}", o.Spec.DNSIP, -1)
+		s = strings.Replace(s, "{{ .SVCTYPE }}", svcTpe, -1)
 		return s, nil
 	}
 
